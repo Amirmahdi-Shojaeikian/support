@@ -1,0 +1,669 @@
+{
+	"info": {
+		"_postman_id": "bcc9f846-a1e1-47a5-b4b2-980013bc9e5c",
+		"name": "support_chat",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30950862",
+		"_collection_link": "https://supportchat.postman.co/workspace/My-Workspace~7bfe59cd-a242-4787-829c-0008acab9ac3/collection/30950862-bcc9f846-a1e1-47a5-b4b2-980013bc9e5c?action=share&source=collection_link&creator=30950862"
+	},
+	"item": [
+		{
+			"name": "userAdmin",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"amirmahdi\",\r\n    \"username\": \"amsh\",\r\n    \"password\": \"13822003\",\r\n    \"phoneNumber\": \"09030882522\",\r\n    \"email\": \"amsh@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4003/v1/userAdmin/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"userAdmin",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"amsh\",\r\n    \"password\": \"13822003\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4003/v1/userAdmin/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"userAdmin",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODVlNTM1NjNmNGYyMjQ2NjEwNDA4MmEiLCJpYXQiOjE3NTEwMTIyOTAsImV4cCI6MTc1MTAyNjY5MH0.c7FHdcq841HBMKl7o_zBsM8hvacEDZk_2F6fS5fLFnM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"amirmahdi\",\r\n    \"username\": \"amsh1\",\r\n    \"password\": \"13822003\",\r\n    \"phoneNumber\": \"09030882522\",\r\n    \"email\": \"amsh@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4003/v1/userAdmin/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"userAdmin",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAll",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODVlNTM1NjNmNGYyMjQ2NjEwNDA4MmEiLCJpYXQiOjE3NTEwMTIyOTAsImV4cCI6MTc1MTAyNjY5MH0.c7FHdcq841HBMKl7o_zBsM8hvacEDZk_2F6fS5fLFnM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4003/v1/userAdmin/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"userAdmin",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOne",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODVlNTM1NjNmNGYyMjQ2NjEwNDA4MmEiLCJpYXQiOjE3NTEwMTIyOTAsImV4cCI6MTc1MTAyNjY5MH0.c7FHdcq841HBMKl7o_zBsM8hvacEDZk_2F6fS5fLFnM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4003/v1/userAdmin/685e53563f4f22466104082a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"userAdmin",
+								"685e53563f4f22466104082a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOneByToken",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODVlNTM1NjNmNGYyMjQ2NjEwNDA4MmEiLCJpYXQiOjE3NTEwMTIyOTAsImV4cCI6MTc1MTAyNjY5MH0.c7FHdcq841HBMKl7o_zBsM8hvacEDZk_2F6fS5fLFnM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4003/v1/userAdmin/685e53563f4f22466104082a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"userAdmin",
+								"685e53563f4f22466104082a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODVlNTM1NjNmNGYyMjQ2NjEwNDA4MmEiLCJpYXQiOjE3NTEwMTIyOTAsImV4cCI6MTc1MTAyNjY5MH0.c7FHdcq841HBMKl7o_zBsM8hvacEDZk_2F6fS5fLFnM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"amirmahdiii\",\r\n    \"username\": \"amsh1\",\r\n    \"phoneNumber\": \"09376050802\",\r\n    \"email\": \"amsh1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4003/v1/userAdmin/685e551f3f0be1e02de54104/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"userAdmin",
+								"685e551f3f0be1e02de54104",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODVlNTM1NjNmNGYyMjQ2NjEwNDA4MmEiLCJpYXQiOjE3NTEwMzE3MDAsImV4cCI6MTc1MTA0NjEwMH0._3Y6lzaxi5bz_G6ieJXNcyhZMRguJr9q-inwpdrYr6Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"amirmahdiii\",\r\n    \"username\": \"amsh1\",\r\n    \"phoneNumber\": \"09376050802\",\r\n    \"email\": \"amsh1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4003/v1/userAdmin/685e5d8390fc5fe82d2475fd/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"userAdmin",
+								"685e5d8390fc5fe82d2475fd",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "routeAccess(admin)",
+			"item": [
+				{
+					"name": "add",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODVlNTM1NjNmNGYyMjQ2NjEwNDA4MmEiLCJpYXQiOjE3NTEwMzE3MDAsImV4cCI6MTc1MTA0NjEwMH0._3Y6lzaxi5bz_G6ieJXNcyhZMRguJr9q-inwpdrYr6Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"کاربران\",\r\n    \"path\": \"/user\",\r\n    \"type\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4003/v1/route/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"route",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAll",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODVlNTM1NjNmNGYyMjQ2NjEwNDA4MmEiLCJpYXQiOjE3NTEwMzE3MDAsImV4cCI6MTc1MTA0NjEwMH0._3Y6lzaxi5bz_G6ieJXNcyhZMRguJr9q-inwpdrYr6Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4003/v1/route/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"route",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOne",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODVlNTM1NjNmNGYyMjQ2NjEwNDA4MmEiLCJpYXQiOjE3NTEwMzE3MDAsImV4cCI6MTc1MTA0NjEwMH0._3Y6lzaxi5bz_G6ieJXNcyhZMRguJr9q-inwpdrYr6Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4003/v1/route/685ea0bbec8f1641300ec23f",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"route",
+								"685ea0bbec8f1641300ec23f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODVlNTM1NjNmNGYyMjQ2NjEwNDA4MmEiLCJpYXQiOjE3NTEwMzE3MDAsImV4cCI6MTc1MTA0NjEwMH0._3Y6lzaxi5bz_G6ieJXNcyhZMRguJr9q-inwpdrYr6Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"کاربران\",\r\n    \"path\": \"/users\",\r\n    \"type\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4003/v1/route/685ea0bbec8f1641300ec23f/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"route",
+								"685ea0bbec8f1641300ec23f",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODVlNTM1NjNmNGYyMjQ2NjEwNDA4MmEiLCJpYXQiOjE3NTEwMzE3MDAsImV4cCI6MTc1MTA0NjEwMH0._3Y6lzaxi5bz_G6ieJXNcyhZMRguJr9q-inwpdrYr6Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"amirmahdiii\",\r\n    \"username\": \"amsh1\",\r\n    \"phoneNumber\": \"09376050802\",\r\n    \"email\": \"amsh1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4003/v1/route/685ea0d5ec8f1641300ec242/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"route",
+								"685ea0d5ec8f1641300ec242",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "role(admin)",
+			"item": [
+				{
+					"name": "add",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODVlNTM1NjNmNGYyMjQ2NjEwNDA4MmEiLCJpYXQiOjE3NTEwMzE3MDAsImV4cCI6MTc1MTA0NjEwMH0._3Y6lzaxi5bz_G6ieJXNcyhZMRguJr9q-inwpdrYr6Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"حسابدار\",\r\n    \"routeAccessId\": [\"685ea18390fc5fe82d2475ff\"],\r\n    \"type\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4003/v1/role/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"role",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAll",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODVlNTM1NjNmNGYyMjQ2NjEwNDA4MmEiLCJpYXQiOjE3NTEwMzE3MDAsImV4cCI6MTc1MTA0NjEwMH0._3Y6lzaxi5bz_G6ieJXNcyhZMRguJr9q-inwpdrYr6Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4003/v1/role/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"role",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOne",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODVlNTM1NjNmNGYyMjQ2NjEwNDA4MmEiLCJpYXQiOjE3NTEwMzE3MDAsImV4cCI6MTc1MTA0NjEwMH0._3Y6lzaxi5bz_G6ieJXNcyhZMRguJr9q-inwpdrYr6Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4003/v1/role/685ea25f2b5d4b3f3909f0df",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"role",
+								"685ea25f2b5d4b3f3909f0df"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODVlNTM1NjNmNGYyMjQ2NjEwNDA4MmEiLCJpYXQiOjE3NTEwMzE3MDAsImV4cCI6MTc1MTA0NjEwMH0._3Y6lzaxi5bz_G6ieJXNcyhZMRguJr9q-inwpdrYr6Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"1حسابدار\",\r\n    \"routeAccessId\": [\"685ea18390fc5fe82d2475ff\"],\r\n    \"type\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4003/v1/role/685ea25f2b5d4b3f3909f0df/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"role",
+								"685ea25f2b5d4b3f3909f0df",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODVlNTM1NjNmNGYyMjQ2NjEwNDA4MmEiLCJpYXQiOjE3NTEwMzE3MDAsImV4cCI6MTc1MTA0NjEwMH0._3Y6lzaxi5bz_G6ieJXNcyhZMRguJr9q-inwpdrYr6Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"amirmahdiii\",\r\n    \"username\": \"amsh1\",\r\n    \"phoneNumber\": \"09376050802\",\r\n    \"email\": \"amsh1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4003/v1/role/685ea61990fc5fe82d247601/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"v1",
+								"role",
+								"685ea61990fc5fe82d247601",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
