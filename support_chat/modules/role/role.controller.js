@@ -32,14 +32,14 @@ exports.getAll = async (req, res) => {
 exports.getOne = async (req, res) => {
   try {
     const {id} = req.params
-    const findRouteAccess = await roleModel.findOne({_id : id})
+    const findRole = await roleModel.findOne({_id : id})
     .populate({
       path: "routeAccessId",
       select: "name path",
     })
     .lean()
 
-    return res.json(findRouteAccess)
+    return res.json(findRole)
     
   } catch (error) {
       console.log(error);

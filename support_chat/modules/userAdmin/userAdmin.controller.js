@@ -1,4 +1,5 @@
 const userAdminModel = require("./../../models/userAdmin");
+const userModel = require("./../../models/user");
 const bcrypt = require("bcrypt");
 
 const {
@@ -42,6 +43,102 @@ exports.add = async (req, res) => {
     return res.status(500).json({ message: "خطای سرور" });
   }
 };
+
+exports.updateInternal = async (req, res) => {
+  try {
+    const {name,username,email,phonNumber,password,organizationId,roleId } =req.body;
+    const {id} = req.params
+    const updateUser = await userModel.findOneAndUpdate({_id : id},{
+      name,username,email,phonNumber,password,organizationId,type:"internal",roleId,admin:true
+    });
+
+    return res.status(200).json({message : "کاربر با موفقیت ویرایش شد", user : updateUser});
+  } catch (error) {
+    if (
+      error.code === 11000 &&
+      error.keyPattern &&
+      Object.keys(error.keyPattern).length > 0
+    ) {
+      return res.status(400).json({ message: 'نام کاربری قبلاً ثبت شد' });
+
+    }
+    console.log(error);
+    return res.status(500).json({ message: "خطای سرور" });
+  }
+};
+exports.addInternal = async (req, res) => {
+  try {
+    const {name,username,email,phonNumber,password,organizationId,roleId } =req.body;
+
+    const createUserAdmin = await userModel.create({
+      name,username,email,phonNumber,password,organizationId,type:"internal",roleId,admin:true
+    });
+
+    return res.status(201).json({message : "کاربر با موفقیت اضافه شد", user : createUserAdmin});
+  } catch (error) {
+    if (
+      error.code === 11000 &&
+      error.keyPattern &&
+      Object.keys(error.keyPattern).length > 0
+    ) {
+      return res.status(400).json({ message: 'نام کاربری قبلاً ثبت شد' });
+
+    }
+    console.log(error);
+    return res.status(500).json({ message: "خطای سرور" });
+  }
+};
+exports.getAllInternal = async (req, res) => {
+  try {
+    const findUsers = await userModel.find({type : "internal", admin : true})
+    .select("name username organizationId phoneNumber createdAt updatedAt")
+    .populate({
+      path: "organizationId",
+      select: "name",
+    })
+    .lean()
+    return res.json(findUsers)
+    
+  } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "خطای سرور" });
+  }
+};
+exports.deleteInternal = async (req, res) => {
+  try {
+    const {id} = req.params
+  
+      const isUser = await userModel.findOneAndDelete({ _id:id });
+
+      if (!isUser) {
+        return res.status(404).json({ message: "user not found" });
+      }
+  
+      return res.status(200).json({message : "کاربر با موفقیت حذف شد"});
+    
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "خطای سرور" });
+
+  }
+};
+exports.getOneInternal = async (req, res) => {
+  try {
+    const {id} = req.params
+    const findUser = await userModel.findOne({_id : id ,type : "internal", admin : true})
+    .select("name username organizationId phoneNumber createdAt updatedAt")
+    .populate({
+      path: "organizationId",
+      select: "name",
+    })
+    .lean()
+    return res.json(findUser)
+  } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "خطای سرور" });
+  }
+};
+
 exports.getAll = async (req, res) => {
   try {
     const findUserAdmins = await userAdminModel.find({active : true}).select("name username roleId phoneNumber createdAt updatedAt").lean()

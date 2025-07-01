@@ -1,10 +1,12 @@
 const express = require("express");
 const path = require("path");
-const userRouter = require("./routes/user.routes");
+// const userRouter = require("./routes/user.routes");
 const sopportRouter = require("./routes/support.routes");
 const userAdminRouter = require("./modules/userAdmin/userAdmin.routes");
 const routeAccessRouter = require("./modules/routeAccess/routeAccess.route");
 const roleRouter = require("./modules/role/role.route");
+const organizationRouter = require("./modules/organization/organization.route");
+const userRouter = require("./modules/user/user.route");
 
 const app = express();
 
@@ -24,6 +26,8 @@ app.use("/v1/auth", sopportRouter);
 app.use("/v1/userAdmin", userAdminRouter);
 app.use("/v1/route", routeAccessRouter);
 app.use("/v1/role", roleRouter);
+app.use("/v1/organization", organizationRouter);
+app.use("/v1/user", userRouter);
 
 //* 404 Error handler
 

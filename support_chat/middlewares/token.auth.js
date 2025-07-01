@@ -7,6 +7,18 @@ const generateAccessToken =  (_id) => {
     })
     return accessToken
 }
+const generateAccessTokenUserInternal =  (_id,organizationId,type) => {
+    const accessToken =  jwt.sign({_id,organizationId,type},process.env.JWT_SECRET,{
+        expiresIn : "4h"
+    })
+    return accessToken
+}
+const generateAccessTokenUserExternal =  (_id,type) => {
+    const accessToken =  jwt.sign({_id,type},process.env.JWT_SECRET,{
+        expiresIn : "4h"
+    })
+    return accessToken
+}
 
 const generateRefreshToken =  (_id) => {
     const refreshToken =  jwt.sign({_id},process.env.JWT_REFRESH_SECRET,{
@@ -16,5 +28,7 @@ const generateRefreshToken =  (_id) => {
 }
 module.exports = {
     generateAccessToken,
+    generateAccessTokenUserInternal,
+    generateAccessTokenUserExternal,
     generateRefreshToken
 }
