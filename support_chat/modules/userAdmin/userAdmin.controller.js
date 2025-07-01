@@ -1,11 +1,9 @@
 const userAdminModel = require("./../../models/userAdmin");
+const organozationModel = require("./../../models/organization");
 const userModel = require("./../../models/user");
 const bcrypt = require("bcrypt");
-
-const {
-  generateAccessToken,
-  generateRefreshToken,
-} = require("../../middlewares/token.auth");
+const {generateAccessToken} = require("../../middlewares/token.auth");
+const { logActivity } = require("../../utils/createActivity");
 
 exports.register = async (req, res) => {
   try {
@@ -29,6 +27,18 @@ exports.add = async (req, res) => {
         name,username,password,email,phoneNumber,roleId
     });
 
+    await logActivity({
+      userId: req.userAdmin._id, 
+      actionEn: 'create_userAdmin',
+      actionFa: 'ایجاد کاربر',
+      targetType: 'userAdmin',
+      targetId: createUserAdmin._id,
+      details: {
+        name: createUserAdmin.name,
+        username: createUserAdmin.username
+      }
+    });
+
     return res.status(201).json({message : "کاربر با موفقیت اضافه شده", user : createUserAdmin});
   } catch (error) {
     if (
@@ -44,12 +54,27 @@ exports.add = async (req, res) => {
   }
 };
 
-exports.updateInternal = async (req, res) => {
+exports.updateInternal = async (req, res) => {ت
   try {
     const {name,username,email,phonNumber,password,organizationId,roleId } =req.body;
     const {id} = req.params
     const updateUser = await userModel.findOneAndUpdate({_id : id},{
       name,username,email,phonNumber,password,organizationId,type:"internal",roleId,admin:true
+    });
+
+    const findOrganization = await organozationModel.findOne({_id : organizationId})
+
+    await logActivity({
+      userId: req.userAdmin._id, 
+      actionEn: 'update_user_admin',
+      actionFa: 'آپدیت کاربر سازمان',
+      targetType: 'userAdmin',
+      targetId: updateUser._id,
+      details: {
+        name: updateUser.name,
+        username: updateUser.username,
+        nameOrganization : findOrganization.name
+      }
     });
 
     return res.status(200).json({message : "کاربر با موفقیت ویرایش شد", user : updateUser});
@@ -72,6 +97,21 @@ exports.addInternal = async (req, res) => {
 
     const createUserAdmin = await userModel.create({
       name,username,email,phonNumber,password,organizationId,type:"internal",roleId,admin:true
+    });
+
+    const findOrganization = await organozationModel.findOne({_id : organizationId})
+
+    await logActivity({
+      userId: req.userAdmin._id, 
+      actionEn: 'create_user_admin',
+      actionFa: 'ایجاد کاربر سازمان',
+      targetType: 'userAdmin',
+      targetId: createUserAdmin._id,
+      details: {
+        name: createUserAdmin.name,
+        username: createUserAdmin.username,
+        nameOrganization : findOrganization.name
+      }
     });
 
     return res.status(201).json({message : "کاربر با موفقیت اضافه شد", user : createUserAdmin});
@@ -114,6 +154,20 @@ exports.deleteInternal = async (req, res) => {
         return res.status(404).json({ message: "user not found" });
       }
   
+      const findOrganization = await organozationModel.findOne({_id : organizationId})
+
+      await logActivity({
+        userId: req.userAdmin._id, 
+        actionEn: 'delete_user_admin',
+        actionFa: 'حذف کاربر سازمان',
+        targetType: 'userAdmin',
+        targetId: isUser._id,
+        details: {
+          name: isUser.name,
+          username: isUser.username,
+          nameOrganization : findOrganization.name
+        }
+      });
       return res.status(200).json({message : "کاربر با موفقیت حذف شد"});
     
   } catch (error) {
@@ -192,6 +246,17 @@ exports.login = async (req, res) => {
           );
         res.cookie("access_token", accessToken, { httpOnly: true });        
 
+        await logActivity({
+          userId: req.userAdmin._id, 
+          actionEn: 'login_userAdmin',
+          actionFa: 'ورود کاربر ',
+          targetType: 'userAdmin',
+          targetId: updateUser._id,
+          details: {
+            name: updateUser.name,
+            username: updateUser.username,
+          }
+        });
         return res
           .status(200)
           .json({ message: "ورود با موفقیت ", user : updateUser  });
@@ -232,6 +297,18 @@ exports.update = async (req, res) => {
         return res.status(404).json({ message: "user not found" });
       }
   
+      
+      await logActivity({
+        userId: req.userAdmin._id, 
+        actionEn: 'update_userAdmin',
+        actionFa: 'آپدیت کاربر ',
+        targetType: 'userAdmin',
+        targetId: isUser._id,
+        details: {
+          name: isUser.name,
+          username: isUser.username,
+        }
+      });
       return res.status(200).json({message : "اطلاعات با موفقیت ویرایش شد"});
     
   } catch (error) {
@@ -250,6 +327,17 @@ exports.delete = async (req, res) => {
         return res.status(404).json({ message: "user not found" });
       }
   
+      await logActivity({
+        userId: req.userAdmin._id, 
+        actionEn: 'delete_userAdmin',
+        actionFa: 'حذف کاربر ',
+        targetType: 'userAdmin',
+        targetId: isUser._id,
+        details: {
+          name: isUser.name,
+          username: isUser.username,
+        }
+      });
       return res.status(200).json({message : "کاربر با موفقیت حذف شد"});
     
   } catch (error) {

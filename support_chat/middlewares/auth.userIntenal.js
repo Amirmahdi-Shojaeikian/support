@@ -19,6 +19,7 @@ const authUserIntenal = async (req, res, next) => {
 
     const userInternal = await userModel.findOne({_id : jwtToken._id ,organizationId : jwtToken.organizationId}).lean();        
 
+    
     if (userInternal == null) {
       return res.status(401).json({ message: 'token not correct' });
     }

@@ -17,11 +17,7 @@ const Schema = new mongoose.Schema(
             enum : ["admin","others"],
             required: true
         },
-        // organizationId: {
-        //     type: mongoose.Types.ObjectId,
-        //     ref: "Carmodel",
-        //     require: true
-        // },
+
     },
     { timestamps: true }
 );

@@ -40,6 +40,18 @@ exports.add = async (req, res) => {
     const uniqueId = await generateUniqueId();
     const createOrganization = await organizationModel.create({name,uniqueId,country,city,email,phoneNumber,PostalCode,address});
 
+
+    await logActivity({
+      userId: req.userAdmin._id,
+      actionEn: 'create_organization',
+      actionFa: 'ایجاد سازمان',
+      targetType: 'Organization',
+      targetId: createOrganization._id,
+      details: {
+        name: createOrganization.name,
+      }
+    });
+
     return res.status(201).json({message : "سازمان با موفقیت اضافه شده", organization : createOrganization});
   } catch (error) {
       console.log(error);
@@ -92,6 +104,16 @@ exports.update = async (req, res) => {
         return res.status(404).json({ message: "سازمان پیدا نشد" });
       }
   
+      await logActivity({
+        userId: req.userAdmin._id,
+        actionEn: 'update_organization',
+        actionFa: 'آپدیت سازمان',
+        targetType: 'Organization',
+        targetId: isOrganization._id,
+        details: {
+          name: isOrganization.name,
+        }
+      });
       return res.status(200).json({message : "اطلاعات با موفقیت ویرایش شد"});
   } catch (error) {
     console.log(error);
@@ -108,7 +130,17 @@ exports.delete = async (req, res) => {
       if (!isOrganization) {
         return res.status(404).json({ message: "سازمان پیدا نشد" });
       }
-  
+    
+      await logActivity({
+        userId: req.userAdmin._id,
+        actionEn: 'delete_organization',
+        actionFa: 'حذف سازمان',
+        targetType: 'Organization',
+        targetId: isOrganization._id,
+        details: {
+          name: isOrganization.name,
+        }
+      });
       return res.status(200).json({message : "سازمان با موفقیت حذف شد"});
     
   } catch (error) {
