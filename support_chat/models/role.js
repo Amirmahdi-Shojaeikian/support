@@ -19,7 +19,7 @@ const Schema = new mongoose.Schema(
         },
         organizationId: {
             type: mongoose.Types.ObjectId,
-            ref: "Carmodel",
+            ref: "Organization",
             require: false
         },
     },

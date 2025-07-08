@@ -52,13 +52,12 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
       required: true
-    }
-    //   organizationId: {
-    //     type: mongoose.Types.ObjectId,
-    //     ref: "RouteAccess",
-    //     require: false
-    // },
-
+    },
+    departmentId: {
+      type: mongoose.Types.ObjectId,
+      ref: "Department",
+      require: false
+    },
     // roomId: {
     //   type : String,
     //   required : false

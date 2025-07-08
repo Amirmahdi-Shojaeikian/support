@@ -56,7 +56,7 @@ exports.loginIntenal = async (req, res) => {
 };
 exports.addInternal = async (req, res) => {
   try {
-    const { name, username, email, phoneNumber, password, organizationId, roleId } = req.body;
+    const { name, username, email, phoneNumber, password, organizationId, roleId , departmentId } = req.body;
 
 
     const findUser = await userModel.findOne({ username, organizationId })
@@ -64,7 +64,7 @@ exports.addInternal = async (req, res) => {
       return res.status(400).json({ message: "نام کاربری تکراری است" })
     }
 
-    const createUser = await userModel.create({ name, username, email, phoneNumber, type: "internal", password, organizationId, roleId });
+    const createUser = await userModel.create({ name, username, email, phoneNumber, type: "internal", password, organizationId,departmentId, roleId });
 
     const findOrganization = await organozationModel.findOne({ _id: organizationId })
 
@@ -121,7 +121,7 @@ exports.getOneInternal = async (req, res) => {
 };
 exports.updateInternal = async (req, res) => {
   try {
-    const { name, username, email, phonNumber, password, organizationId, roleId } = req.body;
+    const { name, username, email, phonNumber, password, organizationId, roleId ,departmentId} = req.body;
     const { id } = req.params
 
     const updateData = {};
@@ -132,6 +132,7 @@ exports.updateInternal = async (req, res) => {
     updateData.phonNumber = phonNumber
     updateData.organizationId = organizationId
     updateData.roleId = roleId
+    updateData.departmentId = departmentId
     if (password) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
