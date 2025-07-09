@@ -8,6 +8,8 @@ const roleRouter = require("./modules/role/role.route");
 const organizationRouter = require("./modules/organization/organization.route");
 const userRouter = require("./modules/user/user.route");
 const departmentRouter = require("./modules/department/department.route");
+const ticketRouter = require("./modules/ticket/ticket.route");
+const messageticketRouter = require("./modules/messageTicket/messageTicket.route");
 
 const app = express();
 
@@ -30,6 +32,7 @@ app.use("/v1/role", roleRouter);
 app.use("/v1/organization", organizationRouter);
 app.use("/v1/user", userRouter);
 app.use("/v1/department", departmentRouter);
+app.use("/v1/ticket", ticketRouter);
 
 //* 404 Error handler
 

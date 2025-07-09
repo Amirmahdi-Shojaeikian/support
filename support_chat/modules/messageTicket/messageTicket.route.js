@@ -11,4 +11,8 @@ router.route("/external/add").post(authUserExternal,messageTicketController.addE
 
 router.route("/internal/add").post(authUserIntenal,messageTicketController.addInternal)
 
+router.route("/:id/external/update").post(authUserExternal,messageTicketController.updateExternal)
+
+router.route("/:id/internal/update").post(authUserIntenal,messageTicketController.updateInternal)
+
 module.exports = router

@@ -9,8 +9,6 @@ exports.addExternal = async (req, res) => {
       description,
       status,
       priority,
-      createdBy,
-      assignedTo,
       departmentId,
       organizationId,
       message
@@ -21,8 +19,7 @@ exports.addExternal = async (req, res) => {
       description,
       status,
       priority,
-      createdBy,
-      assignedTo,
+      createdBy : req.userExternal._id,
       departmentId,
       organizationId
     });
@@ -76,11 +73,9 @@ exports.updateExternal = async (req, res) => {
     const ticketId = req.params.id;
     const { status } = req.body;
 
-    const updatedTicket = await ticketModel.findByIdAndUpdate(ticketId, status, {
-      new: true,
-      runValidators: true
-    });
+    const updatedTicket = await ticketModel.findOneAndUpdate({_id :ticketId}, {status});
 
+    
     if (!updatedTicket) {
       return res.status(404).json({ message: 'تیکت پیدا نشد' });
     }
@@ -138,8 +133,10 @@ exports.updateExternal = async (req, res) => {
 
 exports.acceptInternal = async (req, res) => {
   try {
+    
     const ticketId = req.params.id;
     const supporterId = req.userInternal._id;
+
 
     const ticket = await ticketModel.findById(ticketId);
 
@@ -182,7 +179,19 @@ exports.getAll = async (req, res) => {
   try {
     const unassignedTickets = await ticketModel.find({
       assignedTo: { $eq: [] }
-    }).populate('createdBy departmentId organizationId');
+    })
+    .populate({
+      path: "createdBy",
+      select: "name ",
+    })
+    .populate({
+      path: "organizationId",
+      select: "name ",
+    })
+    .populate({
+      path: "departmentId",
+      select: "name ",
+    })
 
     return res.status(200).json({
       message: 'تیکت‌های بدون پشتیبان',
@@ -200,14 +209,27 @@ exports.getAll = async (req, res) => {
 exports.getAllIntenal = async (req, res) => {
   try {
     const { status } = req.query
+    if (status === undefined) {
+      const findTicket = await ticketModel.find
+      ({
+        assignedTo: [req.userInternal._id],
+        organizationId: req.userInternal.organizationId,
+        departmentId: req.userInternal.departmentId,
+        
+      })      
+      .lean()
+      return res.json(findTicket)
+
+    }
     const findTicket = await ticketModel.find
       ({
-        assignedTo: req.userInternal._id,
+        assignedTo: [req.userInternal._id],
         organizationId: req.userInternal.organizationId,
         departmentId: req.userInternal.departmentId,
         status
-      })
+      })      
       .lean()
+
     return res.json(findTicket)
 
   } catch (error) {
@@ -240,6 +262,8 @@ exports.updateIntenal = async (req, res) => {
     const ticketId = req.params.id;
     const { description, status, assignedTo } = req.body;
     const supporterId = req.userInternal._id;
+    console.log(supporterId);
+    
 
     const ticket = await ticketModel.findById(ticketId);
     if (!ticket) {
@@ -249,21 +273,16 @@ exports.updateIntenal = async (req, res) => {
     if (description !== undefined) ticket.description = description;
     if (status !== undefined) ticket.status = status;
 
-    // افزودن پشتیبان از سمت body
+    // ست کردن مستقیم assignedTo (با حذف همه آی‌دی‌های قبلی)
     if (assignedTo !== undefined) {
       if (Array.isArray(assignedTo)) {
-        assignedTo.forEach(id => {
-          if (!ticket.assignedTo.some(a => a.toString() === id.toString())) {
-            ticket.assignedTo.push(id);
-          }
-        });
+        ticket.assignedTo = assignedTo;
       } else {
-        if (!ticket.assignedTo.some(a => a.toString() === assignedTo.toString())) {
-          ticket.assignedTo.push(assignedTo);
-        }
+        ticket.assignedTo = [assignedTo];
       }
     }
 
+    // اطمینان از اینکه پشتیبان فعلی هم داخل لیست هست
     if (!ticket.assignedTo.some(id => id.toString() === supporterId.toString())) {
       ticket.assignedTo.push(supporterId);
     }
@@ -294,3 +313,4 @@ exports.updateIntenal = async (req, res) => {
     return res.status(500).json({ message: 'خطا در ویرایش تیکت', error: error.message });
   }
 };
+

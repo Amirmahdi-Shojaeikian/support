@@ -16,6 +16,10 @@ const messageSchema = new mongoose.Schema({
         ref: 'Ticket',
         default: null
     },
+    isSeen:{
+        type : Boolean,
+        default : false
+    }
 
 }, { timestamps: true });
 

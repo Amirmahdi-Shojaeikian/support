@@ -16,7 +16,7 @@ router.route("/external/:id/update").put(authUserExternal,ticketController.updat
 router.route("/internal/").get(authUserIntenal,ticketController.getAllIntenal)
 router.route("/internal/unassigned").get(authUserIntenal,ticketController.getAll)
 router.route("/internal/:id").get(authUserIntenal,ticketController.getOneIntenal)
-router.route("/internal/accept").post(authUserExternal,ticketController.acceptInternal)
+router.route("/internal/:id/accept").post(authUserIntenal,ticketController.acceptInternal)
 router.route("/internal/:id/update").put(authUserIntenal,ticketController.updateIntenal)
 
 

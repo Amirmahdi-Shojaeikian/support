@@ -27,3 +27,29 @@ exports.addInternal = async (req, res) => {
 };
 
 
+exports.updateExternal = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateMsg = await msgModel.findOneAndUpdate({_id : id},{isSeen : true})
+
+    return res.status(201).json({message : "با موفقیت بروز شد"});
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "خطای سرور" });
+  }
+};
+
+
+exports.updateInternal = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateMsg = await msgModel.findOneAndUpdate({_id : id},{isSeen : true})
+
+    return res.status(201).json({message : "با موفقیت بروز شد"});
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "خطای سرور" });
+  }
+};
+
+
