@@ -1,159 +1,189 @@
 const userModel = require("./../models/user");
-const supportModel = require("./../models/support");
+const chatModel = require("./../models/chat");
+const messageChatModel = require("./../models/messageChat");
 const messageModel = require("./../models/message");
 const mediaModel = require("./../models/media");
-const conversationModel = require("./../models/conversation");
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
-const path = require("path"); 
+const path = require("path");
+const jwt = require('jsonwebtoken');
 
 
+const onlineUsers = new Map();
+exports.initConnectionUserInternal = (io) => {
 
-exports.initConnectionUser = (io) => {
-  io.on("connection", async (socket) => {
-    socket.emit("privateChats", "test connection");
-  });
-};
+  io.of("/internal").use(async (socket, next) => {
+    try {
+      const token = socket.handshake.headers.auth;
 
-exports.initConnectionSupport = (io) => {
-  io.of("/support").on("connection", async (socket) => {
-    const users = await userModel.find({}).lean()
-    socket.emit("privateChats", users);
-
-  });
-};
-
-exports.chatuser = (io) => {
-  io.of("/pvs/user").on("connection", async (socket) => {
-    console.log("User connected:", socket.id);
-
-    //* join user to chat
-    socket.on("joinUser", async ({ data }) => {
-      try {
-        const { roomId } = data
-        console.log(roomId);
-        const getMessage = await messageModel.find({ roomId })
-
-        socket.join(`${roomId}`);
-
-
-        socket.emit("joined", getMessage);
-
-      } catch (error) {
-        console.error("Error in supportMessage:", error);
+      if (!token || !token.startsWith('Bearer ')) {
+        return next(new Error('توکن ارسال نشده یا فرمت اشتباه است'));
       }
+
+      const pureToken = token.split(' ')[1];
+      const decoded = jwt.verify(pureToken, process.env.JWT_SECRET);
+
+      const user = await userModel.findOne({ _id: decoded._id });
+      if (!user) return next(new Error('کاربر یافت نشد'));
+
+      socket.user = user;
+      next();
+    } catch (err) {
+      console.error('خطای احراز هویت:', err);
+      return next(new Error('احراز هویت ناموفق'));
+    }
+  });
+
+  io.of("/internal").on("connection", async (socket) => {
+    const userId = socket.user._id.toString();
+
+    if (onlineUsers.has(userId)) {
+      const oldSocketId = onlineUsers.get(userId);
+      io.of("/internal").to(oldSocketId).emit("forceDisconnect");
+    }
+
+    onlineUsers.set(userId, socket.id);
+    await userModel.findByIdAndUpdate(userId, { online: true });
+
+    socket.on("joinChat", ({ roomId }) => {
+      if (roomId) socket.join(roomId);
     });
 
-    socket.on("newMsg", async ({ data }) => {
-      try {
+    socket.on("leaveChat", ({ roomId }) => {
+      if (roomId) socket.leave(roomId);
+    });
 
-        const { roomId, type, message,file, filename } = data
-        socket.join(`${roomId}`);
-        const user = await userModel.findOne({ roomId });
-        if (type === "FILE") {
-          const ext = path.extname(filename);
-          const mediaPath = `uploads/${String(Date.now() + ext)}`;
-          fs.writeFile(`public/${mediaPath}`, file, async (err) => {
-            if (!err) {
-              const newMedia = await mediaModel.create({ userId: user._id, sender: "USER", type, path: `${mediaPath}`, roomId });
-              console.log(newMedia);
-              const newMessage = await messageModel.create({ userId: user._id, sender: "USER", type, message, roomId,file:newMedia._id ,path :newMedia.path  })
-              console.log(newMessage);
-              io.of("/pvs/user").to(roomId).emit("userMsg", newMessage);
-              io.of("/pvs/support").to(roomId).emit("supportMsg", newMessage);
-            }
+    socket.on("getChats", async () => {
+      try {
+        const chats = await chatModel
+          .find({ participants: userId, status: { $ne: 'archived' } })
+          .populate('participants', 'name username')
+          .populate('departmentId', 'name')
+          .populate('organizationId', 'name')
+          .sort({ lastMessageAt: -1 })
+          .lean();
+
+        const enrichedChats = await Promise.all(chats.map(async (chat) => {
+          const unreadCount = await messageChatModel.countDocuments({
+            chatId: chat._id,
+            userId: { $ne: userId },
+            isSeen: false,
           });
-        }else{
-        const newMessage = await messageModel.create({ userId: user._id, sender: "USER", type, message, roomId })
-        const prevChat = Array.from(socket.rooms);
-        console.log(`newMsg user ${prevChat}`);
 
+          return { ...chat, unreadCount };
+        }));
 
-        // socket.emit("confirmMsg", newMessage);
-        io.of("/pvs/user").to(roomId).emit("userMsg", newMessage);
-        io.of("/pvs/support").to(roomId).emit("supportMsg", newMessage);}
-
+        socket.emit("chatsList", enrichedChats);
       } catch (error) {
-        console.error("Error in supportMessage:", error);
+        console.error("❌ خطا در دریافت لیست چت‌ها:", error);
+        socket.emit("chatsListError", { message: "خطا در دریافت لیست چت‌ها" });
       }
     });
 
-
-  });
-};
-
-exports.chatsupport = (io) => {
-  io.of("/pvs/support").on("connection", async (socket) => {
-    console.log("Supporter connected:", socket.id);
-
-    //* join supporter to chat
-    socket.on("joinsupport", async ({ data }) => {
+    socket.on("getOneChat", async ({ chatId, limit = 100 }) => {
       try {
-        const { roomId } = data
-        console.log(roomId);
-        const getMessage = await messageModel.find({ roomId })
-        socket.join(`${roomId}`);
-        const prevChat = Array.from(socket.rooms);
-        console.log(prevChat);
+        if (!chatId) return socket.emit("chatOneListError", { message: "chatId الزامی است" });
 
-        socket.emit("joined", getMessage);
+        const chat = await chatModel
+          .findOne({ _id: chatId, participants: userId, status: { $ne: 'archived' } })
+          .populate('participants', 'name username')
+          .populate('departmentId', 'name')
+          .populate('organizationId', 'name')
+          .lean();
 
+        if (!chat) {
+          return socket.emit("chatOneListError", { message: "چت پیدا نشد" });
+        }
+
+        // (۵) محدودسازی تعداد پیام‌ها
+        const messages = await messageChatModel
+          .find({ chatId })
+          .sort({ createdAt: -1 })
+          .limit(limit)
+          .lean();
+
+        // پیام‌ها به ترتیب قدیمی → جدید
+        messages.reverse();
+
+        socket.emit("chatOneList", { chat, messages });
       } catch (error) {
-        console.error("Error in supportMessage:", error);
+        console.error("❌ خطا در دریافت یک چت:", error);
+        socket.emit("chatOneListError", { message: "خطا در دریافت چت" });
       }
     });
 
-    socket.on("newMsg", async ({ data }) => {
+    socket.on("sendMessage", async (data) => {
       try {
+        const { chatId, message, type, file } = data;
 
-        const { roomId, message, type, spporterId } = data
-        socket.join(`${roomId}`);
-        const supporter = await supportModel.findOne({ _id: spporterId });
-        const newMessage = await messageModel.create({ userId: supporter._id, sender: "SUPPORT", type, message, roomId })
-        const prevChat = Array.from(socket.rooms);
-        console.log(`newMsg support ${prevChat}`);
-        io.of("/pvs/user").to(roomId).emit("userMsg", newMessage);
-        io.of("/pvs/support").to(roomId).emit("supportMsg", newMessage);
+        if (!chatId || (!message && !file)) {
+          return socket.emit("sendMessageError", { message: "chatId و message یا file الزامی است" });
+        }
+
+        const chat = await chatModel.findById(chatId).lean();
+        if (!chat) return socket.emit("sendMessageError", { message: "چت پیدا نشد" });
+
+        // (۱) بررسی اینکه کاربر عضو چت باشد
+        if (!chat.participants.map(id => id.toString()).includes(userId)) {
+          return socket.emit("sendMessageError", { message: "شما عضو این چت نیستید" });
+        }
+
+        // (۲) بررسی وجود roomId
+        if (!chat.roomId) {
+          return socket.emit("sendMessageError", { message: "roomId برای این چت تعریف نشده است" });
+        }
+
+        const newMessage = await messageChatModel.create({
+          chatId,
+          userId,
+          message: message || '',
+          type: type || (file ? 'file' : 'text'),
+          file: file || null,
+        });
+
+        await chatModel.findByIdAndUpdate(chatId, { lastMessageAt: new Date() });
+
+        io.of("/internal").to(chat.roomId).emit("newMessage", newMessage);
+
       } catch (error) {
-        console.error("Error in supportMessage:", error);
+        console.error("❌ خطا در ارسال پیام:", error);
+        socket.emit("sendMessageError", { message: "ارسال پیام ناموفق بود" });
       }
     });
 
+    socket.on("seenMessages", async ({ chatId, messageIds }) => {
+      try {
+        if (!chatId || !messageIds?.length) return;
 
-  });
-};
+        const isChat = await chatModel.findOne({ _id: chatId });
 
-
-
-const getMedia = (io, socket) => {
-  socket.on("newMedia", async (data) => {
-    console.log("New Media ->", data);
-    const { filename, file, sender, roomName } = data;
-    const namespace = await NamespaceModel.findOne({ "rooms.title": roomName });
-    const ext = path.extname(filename);
-    const mediaPath = `uploads/${String(Date.now() + ext)}`;
-
-    fs.writeFile(`public/${mediaPath}`, file, async (err) => {
-      if (!err) {
-        await NamespaceModel.updateOne(
+        await messageChatModel.updateMany(
           {
-            _id: namespace._id,
-            "rooms.title": roomName,
+            _id: { $in: messageIds },
+            chatId,
+            userId: { $ne: userId },
+            isSeen: false
           },
-          {
-            $push: {
-              "rooms.$.medias": {
-                sender,
-                path: mediaPath,
-              },
-            },
-          }
+          { $set: { isSeen: true } }
         );
 
-        io.of(namespace.href).in(roomName).emit("confirmMedia", data);
-      } else {
-        // Error Emit
+        io.of("/internal").to(isChat.roomId).emit("messagesSeen", {
+          chatId,
+          seenBy: userId,
+          seenMessageIds: messageIds
+        });
+
+      } catch (error) {
+        console.error("❌ خطا در seenMessages:", error);
+        socket.emit("seenError", { message: "خطا در بروزرسانی پیام‌های دیده‌شده" });
       }
+    });
+
+    socket.on("disconnect", async () => {
+      onlineUsers.delete(userId);
+      await userModel.findByIdAndUpdate(userId, { online: false });
     });
   });
 };
+
+

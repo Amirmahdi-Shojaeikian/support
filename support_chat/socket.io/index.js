@@ -1,14 +1,8 @@
 const {
-  initConnectionUser,
-  initConnectionSupport,
-  chatuser,
-chatsupport,
+  initConnectionUserInternal,
+
 } = require("./namespaces.socket");
 
 module.exports = socketHandler = (io) => {
-  initConnectionUser(io);
-  initConnectionSupport(io)
-  chatuser(io);
-  chatsupport(io);
-
+  initConnectionUserInternal(io);
 };

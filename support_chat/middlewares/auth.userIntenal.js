@@ -17,7 +17,7 @@ const authUserIntenal = async (req, res, next) => {
   
     const jwtToken = jwt.verify(token, process.env.JWT_SECRET);
 
-    const userInternal = await userModel.findOne({_id : jwtToken._id ,organizationId : jwtToken.organizationId}).lean();        
+    const userInternal = await userModel.findOne({_id : jwtToken._id ,organizationId : jwtToken.organizationId,type:"internal"}).lean();        
 
     
     if (userInternal == null) {

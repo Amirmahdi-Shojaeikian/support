@@ -10,6 +10,7 @@ const userRouter = require("./modules/user/user.route");
 const departmentRouter = require("./modules/department/department.route");
 const ticketRouter = require("./modules/ticket/ticket.route");
 const messageticketRouter = require("./modules/messageTicket/messageTicket.route");
+const chatRouter = require("./modules/chat/chat.route");
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use("/v1/organization", organizationRouter);
 app.use("/v1/user", userRouter);
 app.use("/v1/department", departmentRouter);
 app.use("/v1/ticket", ticketRouter);
+app.use("/v1/chat", chatRouter);
 
 //* 404 Error handler
 

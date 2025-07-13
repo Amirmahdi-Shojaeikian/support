@@ -16,7 +16,7 @@ const authUserExternal = async (req, res, next) => {
   
     const jwtToken = jwt.verify(token, process.env.JWT_SECRET);
 
-    const userExternal = await userModel.findOne({_id : jwtToken._id}).lean();        
+    const userExternal = await userModel.findOne({_id : jwtToken._id,type:"external"}).lean();        
     
     if (userExternal == null) {
       return res.status(401).json({ message: 'token not correct' });

@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema(
     },
     username: {
       type: String,
-      required: true
+      required: false 
     },
     email: {
       type: String,
@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["internal", "external"],
+      enum: ["internal", "external","guest"],
       required: true
     },
     password: {
@@ -57,6 +57,10 @@ const userSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "Department",
       require: false
+    },
+    online: {
+      type: Boolean,
+      default: false
     },
     // roomId: {
     //   type : String,
